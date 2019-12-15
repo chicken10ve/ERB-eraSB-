@@ -1,0 +1,70 @@
+﻿;상점 화면
+@MARKET
+;조교되지 않은 인형을 구매, 조교된 인형을 판매
+PRINTL
+PRINTL 노예상
+$BUY_LOOP
+PRINTL
+PRINTL [0] 노예를 구매한다
+INPUT
+IF RESULT == 0
+	CALL PRINT_LIST
+ELSE
+	PRINTL 비정상적인 입력입니다.
+	GOTO BUY_LOOP
+ENDIF
+
+;======
+;아이템 리스트 보여주기
+;======
+@PRINT_LIST
+LOCAL:0 = 101
+;만약 수용인원이 최대수용인원보다 작다면 표시
+PRINTL
+PRINTL
+PRINTFORML 구매하실 노예를 선택해주세요.
+PRINTL
+$PRINT
+;번호가 100부터 105보다 작고 수량이 남아있다면 프린트
+IF LOCAL:0 < 105
+	IF ITEMSALES:(LOCAL:0) != 0
+		PRINTFORMC [{LOCAL:0}] %ITEMNAME:(LOCAL:0)%, {ITEMPRICE:(LOCAL:0)}원
+		LOCAL:0++
+		GOTO PRINT
+	ENDIF
+ENDIF
+PRINTL
+PRINTL [1000] 뒤로가기
+PRINTW
+CALL BUY
+
+
+@BUY
+INPUT
+;구매하는 과정
+LOCAL:1 = RESULT
+LOCAL:2 = LOCAL:1 - 100
+;만약 뒤로가기 버튼이 아니었다
+IF LOCAL:1 != 1000
+	IF MONEY < ITEMPRICE:(LOCAL:1)
+	;돈 부족
+		PRINTL 소지금이 부족합니다.
+	ELSEIF ITEMSALES:(LOCAL:1) != 1
+	;수량 부족
+		PRINTL 남은 수량이 없습니다.
+	ELSEIF FLAG:90 >= FLAG:91
+		PRINTW 수용인원이 가득 찼습니다.
+	ELSE
+	;조건 성립
+		;현재 구매한 인형보다 번호가 큰 인형들까지 수가 0이 되는 오류 발생. 
+		;노예 구매하고 수량 -1
+		ITEMSALES:(LOCAL:1) = 0
+		PRINTFORMC ＜%ITEMNAME:(LOCAL:1)%을 구입했다.＞
+		MONEY == MONEY - ITEMPRICE:(LOCAL:1)
+		ADDCHARA LOCAL:2
+		FLAG:90++
+		PRINTL
+	ENDIF
+ENDIF
+
+

@@ -1,0 +1,100 @@
+﻿
+;｢@SHOW_CHARADATA_MENU｣＝스테이터스 표시
+;｢@CHARA_SALE｣＝캐릭터 매각
+;======
+;처음
+;======
+@SHOW_SHOP
+PRINTL
+PRINTL
+PRINTL
+PRINTL
+;일차 설정
+LOCAL:0 = DAY
+LOCAL:1 = TIME
+DRAWLINE
+DRAWLINE
+;시간 표시
+IF LOCAL:1 == 0
+	PRINTFORML {LOCAL:0}일차, 낮.
+	PRINTL
+ELSE
+	PRINTFORML {LOCAL:0}일차, 밤.
+	PRINTL
+ENDIF
+;소지금 보여주기
+PRINTFORM 소지금 : {MONEY} 에리스
+PRINTL
+PRINTL
+
+;메뉴
+SIF TARGET >= 0 
+	PRINTFORMLC [100] - 조교한다
+PRINTFORMLC [101] - 조교 대상 변경
+PRINTFORMLC [102] - 휴식
+PRINTFORMLC [103] - 일과를 보낸다
+PRINTFORMLC [104] - 상점
+PRINTFORMLC [105] - 능력 향상
+PRINTFORMLC [106] - 저장한다
+PRINTFORMLC [107] - 불러오기
+
+
+;================
+;메뉴 이동
+;================
+@USERSHOP
+;조교
+IF RESULT == 100 
+	IF TARGET != 0
+		BEGIN TRAIN
+	ELSE
+		PRINTL 비정상적인 입력!
+	ENDIF
+ELSEIF RESULT == 101
+	PRINTL 조교대상 변경.
+;휴식
+ELSEIF RESULT == 102
+	PRINTL 휴식.
+;암시장
+ELSEIF RESULT == 103
+	PRINTL 암시장.
+;IOP
+ELSEIF RESULT == 104
+	PRINTL 상점.
+	CALL MARKET
+;능력향상
+ELSEIF RESULT == 105
+	PRINTL 능력 향상.
+;저장
+ELSEIF RESULT == 106
+	PRINTL 저장.
+ELSEIF RESULT == 107
+	PRINTL 불러오기
+ELSE
+	PRINTL 구현중입니다!
+ENDIF
+	
+
+
+;================
+;================
+;자세한 메뉴로 들어가기
+;================
+;================
+
+;================
+;조교 대상 선택
+;================
+@CHANGE_TARGET
+;나중에 하자
+
+;================
+;현재 금액 보여주기
+;================
+@SHOW_GOAL
+PRINTFORM \@(MONEY:0)
+
+;================
+;조교대상 변경
+;================
+
